@@ -7,7 +7,7 @@ The data can be downloaded in the kaggle website using this link https://www.kag
 
 ### Installations
 
-Run the following command in your terminal
+Create a new environemt and run the following command in your terminal
 ```
 
 pip install -r requirement.txt
