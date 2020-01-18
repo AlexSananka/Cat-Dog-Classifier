@@ -11,7 +11,8 @@ from torch.utils.data import Dataset, DataLoader
 import glob
 from PIL import Image
 from dataset import datasetloader
-from model import CNN
+from model import CNN_1
+from model import CNN_2
 
 #function to count number of parameters
 def get_n_params(model):
@@ -20,7 +21,7 @@ def get_n_params(model):
         np += p.nelement()
     return np
 
-input_size  = 224*224*3   # images are 224*224 pixels and has 3 channels because of RGB color
+input_size  = 636*636*3   # images are 224*224 pixels and has 3 channels because of RGB color
 output_size = 2      # there are 2 classes---Cat and dog
 
 # number of subprocesses to use for data loading
@@ -36,7 +37,7 @@ test_dir = os.path.join(data_dir, 'test/')
 
 
 #create transformers
-image_size = (224, 224)
+image_size = (636, 636)
 mean = [0.485, 0.456, 0.406]
 std  = [0.229, 0.224, 0.225]
 train_transform = transforms.Compose([
@@ -76,7 +77,7 @@ def train(epoch, model):
                 epoch, batch_idx * len(data), len(train_loader.dataset),
                 100. * batch_idx / len(train_loader), loss.item()))
             
-def test(model, perm=torch.arange(0, 224*224*3).long()):
+def test(model):
     model.eval()
     test_loss = 0
     correct = 0
@@ -94,15 +95,25 @@ def test(model, perm=torch.arange(0, 224*224*3).long()):
         test_loss, correct, len(test_loader.dataset),
         accuracy))
 
-# Training settings 
+# Training settings  for model 1
 n_features = 2 # hyperparameter
 
-model_cnn = CNN(input_size, n_features, output_size)
-optimizer = optim.SGD(model_cnn.parameters(), lr=0.01, momentum=0.5)
-print('Number of parameters: {}'.format(get_n_params(model_cnn)))
+model_cnn1 = CNN_1(input_size, n_features, output_size)
+optimizer = optim.SGD(model_cnn1.parameters(), lr=0.01, momentum=0.5)
+print('Number of parameters: {}'.format(get_n_params(model_cnn1)))
+
+#for epoch in range(0, 1):
+ #   train(epoch, model_cnn1)
+  #  test(model_cnn1)
+
+
+# Training settings for model 2
+n_features = 6 # hyperparameter
+model_cnn2 = CNN_2(input_size, n_features, output_size)
+optimizer = optim.SGD(model_cnn2.parameters(), lr=0.01, momentum=0.5)
+print('Number of parameters: {}'.format(get_n_params(model_cnn2)))
 
 for epoch in range(0, 1):
-    train(epoch, model_cnn)
-    test(model_cnn)
-
+    train(epoch, model_cnn2)
+    test(model_cnn2)
 
